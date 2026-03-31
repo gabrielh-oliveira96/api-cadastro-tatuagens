@@ -1,0 +1,24 @@
+{
+  "name": "api-cadastro-tatuagens",
+  "version": "1.0.0",
+  "description": "API para cadastro e gerenciamento de tatuagens",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "api",
+    "tattoo",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
