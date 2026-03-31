@@ -1,0 +1,14 @@
+O valor mínimo da tatuagem (nova) não pode ser menor do que R$200,00.
+Caso haja um pequeno retoque após a cicatrização, o valor cobrado é de R$80,00.
+Caso haja retoque por falta de mal cuidado da parte do cliente, o valor cobrado é de 50% do valor da tattoo.
+
+Vamos calcular o valor de um tattoo com base em:
+- Preto/Cinza ou colorido;
+- Estilo, por exemplo: Pontilhismo, realismo, fineline e botanica;
+- Tamanho;
+- Local no corpo, por exemplo: Pé, pescoço, dedos e cabeça o valor é maior. Panturrilha, coxa, e 
+braços o valor é menor. Barriga, costas, peito, ombro, mãos o valor é médio.
+- Idade: De 14 a 17 anos é necessário presença dos pais durante todo o procedimento e assinatura com
+concentimento. =>18 não é necessário presença dos pais.
+Ficha de anamnése: Feito em qualquer idade, sendo de menor (=< 17) ou não.
+Menor de 14 anos não é permitido fazer tattoo.

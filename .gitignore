@@ -1,0 +1,54 @@
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# Arquivos de log
+logs/
+*.log
+
+# Arquivos do SO
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Build outputs
+dist/
+build/
+
+# Arquivos temporários
+.tmp/
+tmp/
+temp/
+
+# Coverage tests
+coverage/
+.nyc_output/
+
+# IDEs
+*.code-workspace
+
+# Arquivos lock (opcional - descomente se quiser que cada dev use suas versões)
+# package-lock.json
+# yarn.lock
