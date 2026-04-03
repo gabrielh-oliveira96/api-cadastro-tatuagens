@@ -1,94 +1,166 @@
-function validarTatuagem(data) {
+const BASE_POR_TAMANHO = [
+  { limiteMaximo: 10, valor: 200 },
+  { limiteMaximo: 20, valor: 500 },
+  { limiteMaximo: 35, valor: 800 },
+  { limiteMaximo: Infinity, valor: 1200 }
+]
+
+const NIVEL_PESO = {
+  facil: 0,
+  medio: 1,
+  dificil: 2
+}
+
+const PERCENTUAIS_POR_NIVEL = {
+  facil: 0,
+  medio: 25,
+  dificil: 50
+}
+
+const ESTILOS = {
+  pontilhismo: 'dificil',
+  realismo: 'medio',
+  fineline: 'facil',
+  botanica: 'medio'
+}
+
+const LOCAIS = {
+  cabeca: 'dificil',
+  pescoco: 'dificil',
+  claviculas: 'dificil',
+  dedos: 'dificil',
+  joelhos: 'dificil',
+  maos: 'dificil',
+  pes: 'dificil',
+  tornozelos: 'dificil',
+  rosto: 'medio',
+  virilha: 'medio',
+  nadegas: 'medio',
+  barriga: 'medio',
+  ombros: 'facil',
+  bracos: 'facil',
+  antebracos: 'facil',
+  peitoral: 'facil',
+  coxas: 'facil',
+  canelas: 'facil',
+  panturrilhas: 'facil',
+  costas: 'facil'
+}
+
+function validarOrcamento(data) {
   const {
     clienteNome,
     clienteIdade,
-    areaCorpo,
     descricao,
     tamanhoCm,
-    valor,
-    tipo, // 'preto_cinza' ou 'colorido'
-    estilo, // 'pontilhismo', 'realismo', 'fineline', 'botanica'
-    local, // local específico no corpo
-    tipoServico, // 'nova', 'retoque_pequeno', 'retoque_cuidado'
-    presencaPais, // booleano para 14-17
-    fichaAnamnese // booleano
+    estilo,
+    local,
+    presencaPais,
+    fichaAnamnese
   } = data
 
-  // Campos obrigatórios
-  if (!clienteNome || !clienteIdade || !areaCorpo || !descricao || !tamanhoCm || !valor || !tipo || !estilo || !local || !tipoServico || fichaAnamnese === undefined) {
-    return 'Todos os campos são obrigatórios, incluindo tipo, estilo, local, tipoServico e fichaAnamnese'
+  if (
+    clienteNome === undefined ||
+    clienteIdade === undefined ||
+    descricao === undefined ||
+    tamanhoCm === undefined ||
+    estilo === undefined ||
+    local === undefined ||
+    presencaPais === undefined ||
+    fichaAnamnese === undefined
+  ) {
+    return 'Todos os campos sao obrigatorios: clienteNome, clienteIdade, descricao, tamanhoCm, estilo, local, presencaPais e fichaAnamnese'
   }
 
-  // Validações básicas
-  if (clienteNome.length < 3) {
-    return 'Nome deve ter pelo menos 3 caracteres'
+  if (typeof clienteNome !== 'string' || clienteNome.trim().length < 3) {
+    return 'Nome do cliente deve ter pelo menos 3 caracteres'
   }
 
-  if (clienteIdade < 14) {
-    return 'Menor de 14 anos não é permitido fazer tatuagem'
+  if (!Number.isInteger(clienteIdade) || clienteIdade < 14) {
+    return 'Menor de 14 anos nao e permitido fazer tatuagem'
   }
 
-  if (tamanhoCm <= 0) {
+  if (typeof descricao !== 'string' || descricao.trim().length === 0) {
+    return 'Descricao do desenho e obrigatoria'
+  }
+
+  if (typeof tamanhoCm !== 'number' || Number.isNaN(tamanhoCm) || tamanhoCm <= 0) {
     return 'Tamanho deve ser maior que 0'
   }
 
-  // Regras de idade e presença de pais
-  if (clienteIdade >= 14 && clienteIdade <= 17) {
-    if (presencaPais !== true) {
-      return 'Para clientes de 14 a 17 anos, presença dos pais é obrigatória'
-    }
-  } else if (clienteIdade >= 18) {
-    // Não precisa presença de pais
+  if (typeof presencaPais !== 'boolean') {
+    return 'Presenca dos pais deve ser informada como booleano'
   }
 
-  // Ficha de anamnese obrigatória para qualquer idade
-  if (!fichaAnamnese) {
-    return 'Ficha de anamnese é obrigatória'
+  if (typeof fichaAnamnese !== 'boolean' || fichaAnamnese !== true) {
+    return 'Ficha de anamnese e obrigatoria'
   }
 
-  // Validações de tipo de serviço e valor
-  if (tipoServico === 'nova') {
-    if (valor < 200) {
-      return 'Valor mínimo para tatuagem nova é R$200,00'
-    }
-  } else if (tipoServico === 'retoque_pequeno') {
-    if (valor !== 80) {
-      return 'Valor para retoque pequeno após cicatrização deve ser R$80,00'
-    }
-  } else if (tipoServico === 'retoque_cuidado') {
-    // Para retoque por cuidado, valor deve ser 50% do valor original, mas como é cadastro, talvez validar se informado
-    // Assumindo que valor é o cobrado, e precisa ser >= algo, mas regras dizem 50% do valor da tattoo
-    // Talvez adicionar campo valorOriginal para retoque
-    // Por simplicidade, aceitar qualquer valor >0 para retoque_cuidado, mas idealmente calcular
-    if (valor <= 0) {
-      return 'Valor deve ser maior que 0'
-    }
-  } else {
-    return 'Tipo de serviço inválido'
+  if (clienteIdade >= 14 && clienteIdade <= 17 && presencaPais !== true) {
+    return 'Para clientes de 14 a 17 anos, a presenca dos pais e obrigatoria'
   }
 
-  // Validações de tipo, estilo, local
-  const tiposValidos = ['preto_cinza', 'colorido']
-  if (!tiposValidos.includes(tipo)) {
-    return 'Tipo deve ser preto_cinza ou colorido'
+  if (!Object.prototype.hasOwnProperty.call(ESTILOS, estilo)) {
+    return 'Estilo invalido'
   }
 
-  const estilosValidos = ['pontilhismo', 'realismo', 'fineline', 'botanica']
-  if (!estilosValidos.includes(estilo)) {
-    return 'Estilo inválido'
+  if (!Object.prototype.hasOwnProperty.call(LOCAIS, local)) {
+    return 'Local invalido'
   }
 
-  const locaisValidos = ['pe', 'pescoco', 'dedos', 'cabeca', 'panturrilha', 'coxa', 'bracos', 'barriga', 'costas', 'peito', 'ombro', 'maos']
-  if (!locaisValidos.includes(local)) {
-    return 'Local inválido'
-  }
-
-  // Regra especial: tamanho >30cm e valor <500 (mantida da original)
-  if (tamanhoCm > 30 && valor < 500) {
-    return 'Tatuagens maiores que 30cm devem custar no mínimo 500'
-  }
-
-  return null // sem erro
+  return null
 }
 
-module.exports = { validarTatuagem }
+function obterValorBasePorTamanho(tamanhoCm) {
+  const tamanhoNumerico = Number(tamanhoCm)
+
+  if (tamanhoNumerico <= 10) {
+    return BASE_POR_TAMANHO[0].valor
+  }
+
+  if (tamanhoNumerico <= 20) {
+    return BASE_POR_TAMANHO[1].valor
+  }
+
+  if (tamanhoNumerico <= 35) {
+    return BASE_POR_TAMANHO[2].valor
+  }
+
+  return BASE_POR_TAMANHO[3].valor
+}
+
+function obterNivelDificuldade(estilo, local) {
+  const nivelEstilo = NIVEL_PESO[ESTILOS[estilo]]
+  const nivelLocal = NIVEL_PESO[LOCAIS[local]]
+
+  if (nivelEstilo >= nivelLocal) {
+    return ESTILOS[estilo]
+  }
+
+  return LOCAIS[local]
+}
+
+function obterPercentualAjuste(nivelDificuldade) {
+  return PERCENTUAIS_POR_NIVEL[nivelDificuldade]
+}
+
+function calcularOrcamento(data) {
+  const valorBase = obterValorBasePorTamanho(data.tamanhoCm)
+  const percentualEstilo = obterPercentualAjuste(ESTILOS[data.estilo])
+  const percentualLocal = obterPercentualAjuste(LOCAIS[data.local])
+  const nivelDificuldade = obterNivelDificuldade(data.estilo, data.local)
+  const percentualAjuste = percentualEstilo + percentualLocal
+  const valor = Math.round(valorBase * (1 + percentualAjuste / 100))
+
+  return {
+    valorBase,
+    nivelDificuldade,
+    percentualAjuste,
+    valor
+  }
+}
+
+module.exports = {
+  validarOrcamento,
+  calcularOrcamento
+}

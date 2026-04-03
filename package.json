@@ -5,18 +5,26 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch"
+    "test": "cross-env NODE_ENV=test mocha \"tests/**/*.test.js\" --reporter mochawesome --reporter-options reportDir=reports/mochawesome,reportFilename=relatorio-testes,quiet=true,overwrite=true",
+    "test:watch": "cross-env NODE_ENV=test mocha \"tests/**/*.test.js\" --watch",
+    "test:coverage": "cross-env NODE_ENV=test c8 --reporter=text --reporter=html mocha \"tests/**/*.test.js\"",
+    "test:coverage:check": "cross-env NODE_ENV=test c8 --reporter=text --reporter=html --check-coverage --branches 100 --functions 100 --lines 100 mocha \"tests/**/*.test.js\"",
+    "test:coverage:watch": "cross-env NODE_ENV=test c8 --reporter=text mocha \"tests/**/*.test.js\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "jest": "^29.0.0",
+    "c8": "^11.0.0",
+    "chai": "^6.2.1",
+    "cross-env": "^10.1.0",
+    "mocha": "^11.7.5",
+    "mochawesome": "^7.1.4",
     "supertest": "^6.0.0"
   }
 }

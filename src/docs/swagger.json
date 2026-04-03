@@ -1,0 +1,398 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API de Orcamentos de Tatuagem",
+    "description": "API REST para cadastro e gerenciamento de orcamentos de tatuagem com calculo automatico de valor baseado em tamanho, estilo e local. O percentual final soma a dificuldade do estilo e do local.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Orcamentos",
+      "description": "Operacoes de CRUD de orcamentos de tatuagem"
+    }
+  ],
+  "paths": {
+    "/orcamentos": {
+      "post": {
+        "tags": ["Orcamentos"],
+        "summary": "Cadastra um novo orcamento",
+        "description": "Cria um orçamento e calcula automaticamente valorBase, nivelDificuldade, percentualAjuste e valor final. O percentual total soma estilo e local. Exemplo: estilo medio + local dificil = 75%.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrcamentoInput"
+              },
+              "example": {
+                "clienteNome": "Carlos Silva",
+                "clienteIdade": 25,
+                "descricao": "Leao na cabeca",
+                "tamanhoCm": 15,
+                "estilo": "botanica",
+                "local": "cabeca",
+                "presencaPais": false,
+                "fichaAnamnese": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Orcamento cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CriarOrcamentoResponse"
+                },
+                "example": {
+                  "id": 1,
+                  "mensagem": "Orcamento cadastrado com sucesso",
+                  "orcamento": {
+                    "id": 1,
+                    "clienteNome": "Carlos Silva",
+                    "clienteIdade": 25,
+                    "descricao": "Leao na cabeca",
+                    "tamanhoCm": 15,
+                    "estilo": "botanica",
+                    "local": "cabeca",
+                    "presencaPais": false,
+                    "fichaAnamnese": true,
+                    "valorBase": 500,
+                    "nivelDificuldade": "dificil",
+                    "percentualAjuste": 75,
+                    "valor": 875
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validacao",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Orcamentos"],
+        "summary": "Lista todos os orcamentos",
+        "description": "Retorna a lista completa de orçamentos já calculados.",
+        "responses": {
+          "200": {
+            "description": "Lista de orcamentos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Orcamento"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orcamentos/{id}": {
+      "get": {
+        "tags": ["Orcamentos"],
+        "summary": "Busca orcamento por ID",
+        "description": "Localiza um orçamento específico pelo identificador numérico.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orcamento encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Orcamento"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Orcamento nao encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Orcamentos"],
+        "summary": "Atualiza orcamento existente",
+        "description": "Substitui os dados de um orçamento existente e recalcula automaticamente o valor final.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdParam"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrcamentoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Orcamento atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtualizarOrcamentoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validacao",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Orcamento nao encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Orcamentos"],
+        "summary": "Exclui orcamento existente",
+        "description": "Remove um orçamento já cadastrado da memória da aplicação.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdParam"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Orcamento removido com sucesso"
+          },
+          "404": {
+            "description": "Orcamento nao encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErroResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "IdParam": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID numerico do orcamento",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "schemas": {
+      "OrcamentoInput": {
+        "type": "object",
+        "required": [
+          "clienteNome",
+          "clienteIdade",
+          "descricao",
+          "tamanhoCm",
+          "estilo",
+          "local",
+          "presencaPais",
+          "fichaAnamnese"
+        ],
+        "properties": {
+          "clienteNome": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Nome do cliente.",
+            "example": "Carlos Silva"
+          },
+          "clienteIdade": {
+            "type": "integer",
+            "minimum": 14,
+            "description": "Idade do cliente. Menores de 14 anos não são permitidos.",
+            "example": 25
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição da arte desejada.",
+            "example": "Leao no braco"
+          },
+          "tamanhoCm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "Tamanho aproximado da tatuagem em centímetros.",
+            "example": 15
+          },
+          "estilo": {
+            "type": "string",
+            "enum": ["pontilhismo", "realismo", "fineline", "botanica"],
+            "description": "Estilo da tatuagem, usado no cálculo de dificuldade.",
+            "example": "realismo"
+          },
+          "local": {
+            "type": "string",
+            "enum": [
+              "cabeca",
+              "pescoco",
+              "claviculas",
+              "dedos",
+              "joelhos",
+              "maos",
+              "pes",
+              "tornozelos",
+              "rosto",
+              "virilha",
+              "nadegas",
+              "barriga",
+              "ombros",
+              "bracos",
+              "antebracos",
+              "peitoral",
+              "coxas",
+              "canelas",
+              "panturrilhas",
+              "costas"
+            ],
+            "description": "Local do corpo onde a tatuagem será feita.",
+            "example": "bracos"
+          },
+          "presencaPais": {
+            "type": "boolean",
+            "description": "Obrigatório para clientes entre 14 e 17 anos.",
+            "example": false
+          },
+          "fichaAnamnese": {
+            "type": "boolean",
+            "description": "A ficha deve ser informada como verdadeira para liberar o orçamento.",
+            "example": true
+          }
+        }
+      },
+      "Orcamento": {
+        "allOf": [
+          {
+            "type": "object",
+            "required": ["id", "valorBase", "nivelDificuldade", "percentualAjuste", "valor"],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "valorBase": {
+                "type": "number",
+                "description": "Valor base calculado pela faixa de tamanho da tatuagem.",
+                "example": 500
+              },
+              "nivelDificuldade": {
+                "type": "string",
+                "enum": ["facil", "medio", "dificil"],
+                "description": "Maior nível entre estilo e local. Se houver sobreposição, prevalece o nível mais alto.",
+                "example": "medio"
+              },
+              "percentualAjuste": {
+                "type": "number",
+                "description": "Percentual total aplicado sobre o valor base, resultante da soma das dificuldades de estilo e local.",
+                "example": 25
+              },
+              "valor": {
+                "type": "number",
+                "description": "Valor final calculado do orçamento.",
+                "example": 625
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/OrcamentoInput"
+          }
+        ]
+      },
+      "CriarOrcamentoResponse": {
+        "type": "object",
+        "required": ["id", "mensagem", "orcamento"],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "mensagem": {
+            "type": "string",
+            "example": "Orcamento cadastrado com sucesso"
+          },
+          "orcamento": {
+            "$ref": "#/components/schemas/Orcamento"
+          }
+        }
+      },
+      "AtualizarOrcamentoResponse": {
+        "type": "object",
+        "required": ["mensagem", "orcamento"],
+        "properties": {
+          "mensagem": {
+            "type": "string",
+            "example": "Orcamento atualizado com sucesso"
+          },
+          "orcamento": {
+            "$ref": "#/components/schemas/Orcamento"
+          }
+        }
+      },
+      "ErroResponse": {
+        "type": "object",
+        "required": ["erro"],
+        "properties": {
+          "erro": {
+            "type": "string",
+            "example": "Orcamento nao encontrado"
+          }
+        },
+        "example": {
+          "erro": "Orcamento nao encontrado"
+        }
+      }
+    }
+  }
+}

@@ -1,14 +1,54 @@
-O valor mínimo da tatuagem (nova) não pode ser menor do que R$200,00.
-Caso haja um pequeno retoque após a cicatrização, o valor cobrado é de R$80,00.
-Caso haja retoque por falta de mal cuidado da parte do cliente, o valor cobrado é de 50% do valor da tattoo.
+O valor da tatuagem com base no seu tamanho, estilo e local.
 
-Vamos calcular o valor de um tattoo com base em:
-- Preto/Cinza ou colorido;
-- Estilo, por exemplo: Pontilhismo, realismo, fineline e botanica;
-- Tamanho;
-- Local no corpo, por exemplo: Pé, pescoço, dedos e cabeça o valor é maior. Panturrilha, coxa, e 
-braços o valor é menor. Barriga, costas, peito, ombro, mãos o valor é médio.
+Para uma tatuagem pequena o valor base é R$200,00, para uma média é R$500,00, R$800,00 para uma grande e R$1200,00 para fechamento.
+O esforço para fazer a tatuagem adiciona um percentual de acordo com seu nível de dificuldade ao valor base:
+Fácil: não possui adicional
+Médio: adiciona 25% no valor
+Dificil: adiciona 50% no valor
+
+Os estilos disponíveis para fazer tatuagem são e seus níveis de dificuldade:
+- Pontilhismo: dificil
+- Realismo: médio / dificil 
+- Fineline: fácil
+- Botânica: médio
+
+Os locais para tatuar são listados abaixo de acordo com a dificuldade:
+Difícil:
+    Cabeça;
+    Pescoço;
+    Clavículas;
+    Dedos;
+    Joelhos;
+    Mãos;
+    Pés;
+    Tornozelos.
+
+Médio: 
+    Rosto;
+    Mãos;
+    Pés;
+    Virilha;
+    Nádegas;
+    Barriga;
+
+Fácil:
+    Ombros;
+    Braços;
+    Antebraços;
+    Peitoral;
+    Coxas;
+    Canelas;
+    Panturrilhas;
+    Costas
+
+Os percentuais da dificuldade do estilo e do local de tatuagem são acrescidos ao valor da tatuagem,
+por exemplo, valor base da tatuagem + 25% de uma dificuldade média + 50% de uma tatuagem no pé (dificil).
+
+As regras para fazer a tatuagem de acordo com a idade do cliente são:
 - Idade: De 14 a 17 anos é necessário presença dos pais durante todo o procedimento e assinatura com
 concentimento. =>18 não é necessário presença dos pais.
 Ficha de anamnése: Feito em qualquer idade, sendo de menor (=< 17) ou não.
 Menor de 14 anos não é permitido fazer tattoo.
+
+Os dados necessários para cadastrar o orçamento da tatuagem do cliente são:
+Nome do cliente, idade do cliente, area do corpo (local), descrição do desenho, tamanho, valor, estilo, ficha de anamnése e presença dos pais

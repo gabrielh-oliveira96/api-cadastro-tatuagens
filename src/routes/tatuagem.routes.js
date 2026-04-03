@@ -1,85 +1,90 @@
 const express = require('express')
 const router = express.Router()
 
-const { validarTatuagem } = require('../validators/tatuagem.validator')
+const { validarOrcamento, calcularOrcamento } = require('../validators/tatuagem.validator')
 
-let tatuagens = []
+let orcamentos = []
 let idAtual = 1
 
 router.post('/', (req, res) => {
-  const erro = validarTatuagem(req.body)
+  const erro = validarOrcamento(req.body)
 
   if (erro) {
     return res.status(400).json({ erro })
   }
 
-  const novaTatuagem = {
+  const novoOrcamento = {
     id: idAtual++,
-    ...req.body
+    ...req.body,
+    ...calcularOrcamento(req.body)
   }
 
-  tatuagens.push(novaTatuagem)
+  orcamentos.push(novoOrcamento)
 
   return res.status(201).json({
-    id: novaTatuagem.id,
-    mensagem: 'Tatuagem cadastrada com sucesso',
-    tatuagem: novaTatuagem
+    id: novoOrcamento.id,
+    mensagem: 'Orcamento cadastrado com sucesso',
+    orcamento: novoOrcamento
   })
 })
 
 router.get('/', (req, res) => {
-  return res.json(tatuagens)
+  return res.json(orcamentos)
 })
+
+if (process.env.NODE_ENV === 'test') {
+  router.delete('/test/reset', (req, res) => {
+    orcamentos = []
+    idAtual = 1
+    return res.status(204).send()
+  })
+}
 
 router.get('/:id', (req, res) => {
   const id = Number(req.params.id)
-  const tatuagem = tatuagens.find(t => t.id === id)
+  const orcamento = orcamentos.find(item => item.id === id)
 
-  if (!tatuagem) {
-    return res.status(404).json({ erro: 'Tatuagem não encontrada' })
+  if (!orcamento) {
+    return res.status(404).json({ erro: 'Orcamento nao encontrado' })
   }
 
-  return res.json(tatuagem)
+  return res.json(orcamento)
 })
 
 router.put('/:id', (req, res) => {
   const id = Number(req.params.id)
-  const index = tatuagens.findIndex(t => t.id === id)
+  const index = orcamentos.findIndex(item => item.id === id)
 
   if (index === -1) {
-    return res.status(404).json({ erro: 'Tatuagem não encontrada' })
+    return res.status(404).json({ erro: 'Orcamento nao encontrado' })
   }
 
-  const erro = validarTatuagem(req.body)
+  const erro = validarOrcamento(req.body)
 
   if (erro) {
     return res.status(400).json({ erro })
   }
 
-  tatuagens[index] = { id, ...req.body }
+  orcamentos[index] = {
+    id,
+    ...req.body,
+    ...calcularOrcamento(req.body)
+  }
 
-  return res.json({ mensagem: 'Tatuagem atualizada com sucesso', tatuagem: tatuagens[index] })
+  return res.json({ mensagem: 'Orcamento atualizado com sucesso', orcamento: orcamentos[index] })
 })
 
 router.delete('/:id', (req, res) => {
   const id = Number(req.params.id)
-  const index = tatuagens.findIndex(t => t.id === id)
+  const index = orcamentos.findIndex(item => item.id === id)
 
   if (index === -1) {
-    return res.status(404).json({ erro: 'Tatuagem não encontrada' })
+    return res.status(404).json({ erro: 'Orcamento nao encontrado' })
   }
 
-  tatuagens.splice(index, 1)
+  orcamentos.splice(index, 1)
 
   return res.status(204).send()
 })
-
-if (process.env.NODE_ENV === 'test') {
-  router.delete('/test/reset', (req, res) => {
-    tatuagens = []
-    idAtual = 1
-    return res.status(204).send()
-  })
-}
 
 module.exports = router
